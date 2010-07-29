@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site site="http://www.nbcolympics.com"
+	    plugin="silverlight"
+			initialState="playing"
+			version="1.0">
+			
+	<crop x="0" y="0" width="0" height="360" />
+
+	<seekbar type="simple">
+		<start x="107" y="374" />
+		<end x="552" y="374" />
+		<played>
+			<color rgb="274A7B" />
+		</played>
+	</seekbar>
+	
+	<state name="playing">
+		<event>
+			<condition>
+				<command name="pause" />
+			</condition>
+			<action>
+				<click x="50" y="380" />
+				<goto state="paused" />
+			</action>
+		</event>
+		
+		<event>
+	      <condition>
+	        <color x="553" y="366" rgb="D0D0D0"/>
+	      </condition>
+	      <action>
+	        <goto state="end"/>
+	      </action>
+	    </event>
+	</state>
+
+	<state name="paused">
+		<event>
+			<condition>
+				<command name="play" />
+			</condition>
+			<action>
+				<click x="50" y="380" />
+				<goto state="playing" />
+			</action>
+		</event>
+	</state>
+</site>
