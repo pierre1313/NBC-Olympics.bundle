@@ -1,7 +1,4 @@
 import re, string, datetime, lxml, urllib2
-from PMS import *
-from PMS.Objects import *
-from PMS.Shortcuts import *
 from random import Random
 
 VIDEO_PREFIX = "/video/nbcolympics"
@@ -37,7 +34,7 @@ def Start():
   MediaContainer.art = R('art-default.png')
   MediaContainer.title1 = L('NBC Olympics')
   DirectoryItem.thumb=R("icon-default.png")
-  HTTP.SetCacheTime(CACHE_INTERVAL)
+  HTTP.CacheTime = CACHE_INTERVAL
   
 ####################################################################################################
 def MainMenuVideo():
@@ -90,7 +87,7 @@ def Videos(sender, path, pageOneSuffix = SPORTS_PAGE_ONE_SUFFIX, pagedSuffix = S
         url = url + pagedSuffix % page
         
     
-    for item in XML.ElementFromURL(url, True, errors='ignore').xpath('//ul[@class="FeaturedVideo2"]/li'):
+    for item in HTML.ElementFromURL(url, errors='ignore').xpath('//ul[@class="FeaturedVideo2"]/li'):
         title = item.xpath("a/img")[0].get('alt')
         thumb = BASE_URL + item.xpath("a/img")[0].get('src')
         videoPath = item.xpath("a")[0].get('href')
@@ -100,7 +97,7 @@ def Videos(sender, path, pageOneSuffix = SPORTS_PAGE_ONE_SUFFIX, pagedSuffix = S
         else:
             videoUrl = BASE_URL + videoPath
         dir.Append(Function(WebVideoItem(Video, title=title, thumb=thumb), videoUrl=videoUrl))
-    for item in XML.ElementFromURL(url, True, errors='ignore').xpath('//ul[@class="ulSlideShow ManageLinks"]/li'):
+    for item in HTML.ElementFromURL(url, errors='ignore').xpath('//ul[@class="ulSlideShow ManageLinks"]/li'):
         videoPath = item.xpath("div/a")[0].get('href')
         videoUrl = None
         if videoPath.startswith('http'):
@@ -111,7 +108,7 @@ def Videos(sender, path, pageOneSuffix = SPORTS_PAGE_ONE_SUFFIX, pagedSuffix = S
         thumb = BASE_URL + item.xpath("div/a/img")[0].get('src')
         dir.Append(WebVideoItem(videoUrl, title=title, thumb=thumb))
     # Pagination
-    morePages = len(XML.ElementFromURL(url, True, errors='ignore').xpath('//div[@class="nextLink"]')) > 0
+    morePages = len(HTML.ElementFromURL(url, errors='ignore').xpath('//div[@class="nextLink"]')) > 0
     if morePages:
         dir.Append(Function(DirectoryItem(Videos, title="More ..."), path = path, pageOneSuffix=pageOneSuffix, pagedSuffix=pagedSuffix, page=page+1))
     return dir
